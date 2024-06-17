@@ -50,7 +50,7 @@ public:
                     if(tailptr->next.compare_exchange_weak(next,node)){
                         Q.Tail.ptr.compare_exchange_weak(tailptr,node);
                         Q.Tail.count.compare_exchange_weak(tailcount,tailcount+1);
-                        printQueue();
+                        //printQueue();
                         return;
                     }
                 }
@@ -86,7 +86,7 @@ public:
                     if(Q.Head.ptr.compare_exchange_weak(headPtr,next)){
                         Q.Head.count.compare_exchange_weak(headCount,headCount+1);
                         delete headPtr;
-                        printQueue();
+                        //printQueue();
                         return true;
                     }
                 }
@@ -109,26 +109,25 @@ private:
     Queue Q;
 };
 
-int main() {
-    LockFreeQueue<int> queue;
+// int main() {
+//     LockFreeQueue<int> queue;
 
-    // Example usage:
-    queue.enqueue(1);
-    queue.enqueue(2);
-    queue.enqueue(3);
+//     queue.enqueue(1);
+//     queue.enqueue(2);
+//     queue.enqueue(3);
 
-    int value;
-    if (queue.dequeue(value)) {
-        std::cout << "Dequeued: " << value << std::endl;
-    }
+//     int value;
+//     if (queue.dequeue(value)) {
+//         std::cout << "Dequeued: " << value << std::endl;
+//     }
 
-    if (queue.dequeue(value)) {
-        std::cout << "Dequeued: " << value << std::endl;
-    }
+//     if (queue.dequeue(value)) {
+//         std::cout << "Dequeued: " << value << std::endl;
+//     }
 
-    if (queue.dequeue(value)) {
-        std::cout << "Dequeued: " << value << std::endl;
-    }
+//     if (queue.dequeue(value)) {
+//         std::cout << "Dequeued: " << value << std::endl;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
