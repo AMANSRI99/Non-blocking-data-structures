@@ -25,10 +25,11 @@ Ensure you have a C++14 compatible compiler installed on your system.
 To run a benchmark with 10000 elements, 4 producer threads, and 4 consumer threads, use:
 ```shell
 ./benchmark 10000 4 4 0
+```
 
 
-# Non-Blocking Queue Benchmarking
+#Non-Blocking Queue Benchmarking
 
 Follow the same above steps with benchmarking_with_core_affinity.cpp instead of benchmarking.cpp
 
-## Note - There's no real difference observed with both the benchmarkings.
+Note - There's no real difference observed with both the benchmarkings.
