@@ -4,10 +4,13 @@
 #include <atomic>
 #include <chrono>
 #include <cstdlib>  // For std::atoi
-#include "nbq.cpp"  // Ensure this includes the correct LockFreeQueue implementation
+#include "IQueue.h"
+#include "blocking_queue.h"
+#include "non_blocking_queue.h"
 
 // Function for producer threads
-void producer(LockFreeQueue<int>& queue, int num_elements, std::atomic<int>& enqueued_count, std::atomic<int>& done_producing) {
+template <typename QueueType>
+void producer(QueueType& queue, int num_elements, std::atomic<int>& enqueued_count, std::atomic<int>& done_producing) {
     for (int i = 0; i < num_elements; ++i) {
         queue.enqueue(i);
         ++enqueued_count;
@@ -16,7 +19,8 @@ void producer(LockFreeQueue<int>& queue, int num_elements, std::atomic<int>& enq
 }
 
 // Function for consumer threads
-void consumer(LockFreeQueue<int>& queue, std::atomic<int>& dequeued_count, std::atomic<int>& done_producing, int total_producers) {
+template <typename QueueType>
+void consumer(QueueType& queue, std::atomic<int>& dequeued_count, std::atomic<int>& done_producing, int total_producers) {
     int value;
     while (true) {
         if (queue.dequeue(value)) {
@@ -37,21 +41,29 @@ void consumer(LockFreeQueue<int>& queue, std::atomic<int>& dequeued_count, std::
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 4) {
-        std::cerr << "Usage: " << argv[0] << " <num_elements> <num_producers> <num_consumers>" << std::endl;
+    if (argc != 5) {
+        std::cerr << "Usage: " << argv[0] << " <num_elements> <num_producers> <num_consumers> <queue_type>" << std::endl;
+        std::cerr << "queue_type: 0 for LockFreeQueue, 1 for BlockingQueue" << std::endl;
         return 1;
     }
 
     const int num_elements = std::atoi(argv[1]);   // Total number of elements to enqueue/dequeue
     const int num_producers = std::atoi(argv[2]);  // Number of producer threads
     const int num_consumers = std::atoi(argv[3]);  // Number of consumer threads
+    const int queue_type = std::atoi(argv[4]);     // Queue type: 0 for LockFreeQueue, 1 for BlockingQueue
 
-    if (num_elements <= 0 || num_producers <= 0 || num_consumers <= 0) {
-        std::cerr << "All parameters must be positive integers." << std::endl;
+    if (num_elements <= 0 || num_producers <= 0 || num_consumers <= 0 || (queue_type != 0 && queue_type != 1)) {
+        std::cerr << "All parameters must be positive integers and queue_type must be 0 or 1." << std::endl;
         return 1;
     }
 
-    LockFreeQueue<int> queue;
+    std::unique_ptr<IQueue<int>> queue;
+    if (queue_type == 0) {
+        queue = std::make_unique<LockFreeQueue<int>>();
+    } else {
+        queue = std::make_unique<BlockingQueue<int>>();
+    }
+
     std::atomic<int> enqueued_count(0);
     std::atomic<int> dequeued_count(0);
     std::atomic<int> done_producing(0);
@@ -63,17 +75,22 @@ int main(int argc, char* argv[]) {
 
     // Start producer threads
     for (int i = 0; i < num_producers; ++i) {
-        producers.emplace_back(producer, std::ref(queue), num_elements / num_producers, std::ref(enqueued_count), std::ref(done_producing));
+        producers.emplace_back(producer<IQueue<int>>, std::ref(*queue), num_elements / num_producers, std::ref(enqueued_count), std::ref(done_producing));
     }
 
     // Start consumer threads
     for (int i = 0; i < num_consumers; ++i) {
-        consumers.emplace_back(consumer, std::ref(queue), std::ref(dequeued_count), std::ref(done_producing), num_producers);
+        consumers.emplace_back(consumer<IQueue<int>>, std::ref(*queue), std::ref(dequeued_count), std::ref(done_producing), num_producers);
     }
 
     // Join producer threads
     for (auto& t : producers) {
         t.join();
+    }
+
+    // Signal to the BlockingQueue that production is done
+    if (queue_type == 1) {
+        dynamic_cast<BlockingQueue<int>*>(queue.get())->set_done();
     }
 
     // Join consumer threads
