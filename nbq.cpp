@@ -54,7 +54,7 @@ public:
                         return;
                     }
                 }
-                else{
+                else{//if tail is not at the last elemnt then shift tail to next and recheck.
                     Q.Tail.ptr.compare_exchange_weak(tailptr,next);
                     Q.Tail.count.compare_exchange_weak(tailcount,tailcount+1);
                 }
@@ -62,33 +62,6 @@ public:
 
         }
     }
-
-    // bool dequeue(T& pvalue) {
-    //     while (true) {
-    //         Node* headPtr = Q.Head.ptr.load();
-    //         unsigned headCount = Q.Head.count.load();
-    //         Node* tailPtr = Q.Tail.ptr.load();
-    //         unsigned tailCount = Q.Tail.count.load();
-    //         Node* next = headPtr->next.load();
-    //         if (headPtr == Q.Head.ptr.load() && headCount == Q.Head.count.load()) {
-    //             if (headPtr == tailPtr) {
-    //                 if (next == nullptr) {
-    //                     return false;
-    //                 }
-    //                 Q.Tail.ptr.compare_exchange_weak(tailPtr, next);
-    //                 Q.Tail.count.compare_exchange_weak(tailCount, tailCount + 1);
-    //             } else {
-    //                 pvalue = next->value;
-    //                 if (Q.Head.ptr.compare_exchange_weak(headPtr, next)) {
-    //                     Q.Head.count.compare_exchange_weak(headCount, headCount + 1);
-    //                     delete headPtr;
-    //                     printQueue();
-    //                     return true;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 
     bool dequeue(T& pvalue){
         while(true){
@@ -101,8 +74,8 @@ public:
             Node* next = headPtr->next.load();
 
             if(headPtr==Q.Head.ptr.load() && headCount == Q.Head.count.load()){
-                if(headPtr == tailPtr){
-                    if(next == nullptr){
+                if(headPtr == tailPtr){// either empty queue of tail laging behind.
+                    if(next == nullptr){//empty queue
                         return false;
                     }
                     Q.Tail.ptr.compare_exchange_weak(tailPtr,next);
