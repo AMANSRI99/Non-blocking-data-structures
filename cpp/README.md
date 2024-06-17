@@ -1,7 +1,27 @@
-# running cpp implementation of non blocking queue using benchmarking tool.
+# Non-Blocking Queue Benchmarking
 
+This repository contains a C++ implementation of a non-blocking queue and includes a benchmarking tool to evaluate its performance. Follow the instructions below to compile and run the benchmark.
 
-1 - Run the following command from the cpp directory.
-g++ -std=c++11 -o benchmark benchmarking.cpp
-2 - run the following command 
-```./benchmark <number of elements> <number of producer threads> <number of cinsumer threads>```
+## Prerequisites
+
+Ensure you have a C++11 compatible compiler installed on your system.
+
+## Running the Benchmark
+
+1. Navigate to the `cpp` directory of the repository.
+
+2. Compile the benchmarking tool using the following command:
+    ```shell
+    g++ -std=c++11 -o benchmark benchmarking.cpp
+    ```
+
+3. Run the benchmark with the following command:
+    ```shell
+    ./benchmark <number of elements> <number of producer threads> <number of consumer threads>
+    ```
+
+### Example
+
+To run a benchmark with 10000 elements, 4 producer threads, and 4 consumer threads, use:
+```shell
+./benchmark 10000 4 4
