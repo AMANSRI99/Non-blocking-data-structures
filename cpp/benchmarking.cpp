@@ -3,6 +3,7 @@
 #include <vector>
 #include <atomic>
 #include <chrono>
+#include <cstdlib>  // For std::atoi
 #include "nbq.cpp"  // Ensure this includes the correct LockFreeQueue implementation
 
 // Function for producer threads
@@ -35,10 +36,20 @@ void consumer(LockFreeQueue<int>& queue, std::atomic<int>& dequeued_count, std::
     }
 }
 
-int main() {
-    const int num_elements = 1000000;   // Total number of elements to enqueue/dequeue
-    const int num_producers = 4;        // Number of producer threads
-    const int num_consumers = 4;        // Number of consumer threads
+int main(int argc, char* argv[]) {
+    if (argc != 4) {
+        std::cerr << "Usage: " << argv[0] << " <num_elements> <num_producers> <num_consumers>" << std::endl;
+        return 1;
+    }
+
+    const int num_elements = std::atoi(argv[1]);   // Total number of elements to enqueue/dequeue
+    const int num_producers = std::atoi(argv[2]);  // Number of producer threads
+    const int num_consumers = std::atoi(argv[3]);  // Number of consumer threads
+
+    if (num_elements <= 0 || num_producers <= 0 || num_consumers <= 0) {
+        std::cerr << "All parameters must be positive integers." << std::endl;
+        return 1;
+    }
 
     LockFreeQueue<int> queue;
     std::atomic<int> enqueued_count(0);
