@@ -4,7 +4,7 @@ This repository contains a C++ implementation of a non-blocking queue and includ
 
 ## Prerequisites
 
-Ensure you have a C++11 compatible compiler installed on your system.
+Ensure you have a C++14 compatible compiler installed on your system.
 
 ## Running the Benchmark
 
@@ -12,16 +12,16 @@ Ensure you have a C++11 compatible compiler installed on your system.
 
 2. Compile the benchmarking tool using the following command:
     ```shell
-    g++ -std=c++11 -o benchmark benchmarking.cpp
+    g++ -std=c++14 -o benchmark benchmarking.cpp
     ```
 
 3. Run the benchmark with the following command:
     ```shell
-    ./benchmark <number of elements> <number of producer threads> <number of consumer threads>
+    ./benchmark <number of elements> <number of producer threads> <number of consumer threads> <0 for non blocking and 1 for blocking>
     ```
 
 ### Example
 
 To run a benchmark with 10000 elements, 4 producer threads, and 4 consumer threads, use:
 ```shell
-./benchmark 10000 4 4
+./benchmark 10000 4 4 0
