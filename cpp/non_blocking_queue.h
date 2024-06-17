@@ -51,13 +51,13 @@ public:
             if (tailptr == Q.Tail.ptr.load() && tailcount == Q.Tail.count.load()) {
                 if (next == nullptr) {
                     if (tailptr->next.compare_exchange_weak(next, node)) {
-                        Q.Tail.ptr.compare_exchange_weak(tailptr, node);
-                        Q.Tail.count.compare_exchange_weak(tailcount, tailcount + 1);
+                        Q.Tail.ptr.compare_exchange_strong(tailptr, node);
+                        Q.Tail.count.compare_exchange_strong(tailcount, tailcount + 1);
                         return;
                     }
                 } else {
-                    Q.Tail.ptr.compare_exchange_weak(tailptr, next);
-                    Q.Tail.count.compare_exchange_weak(tailcount, tailcount + 1);
+                    Q.Tail.ptr.compare_exchange_strong(tailptr, next);
+                    Q.Tail.count.compare_exchange_strong(tailcount, tailcount + 1);
                 }
             }
         }
@@ -78,8 +78,8 @@ public:
                     if (next == nullptr) {
                         return false;
                     }
-                    Q.Tail.ptr.compare_exchange_weak(tailPtr, next);
-                    Q.Tail.count.compare_exchange_weak(tailCount, tailCount + 1);
+                    Q.Tail.ptr.compare_exchange_strong(tailPtr, next);
+                    Q.Tail.count.compare_exchange_strong(tailCount, tailCount + 1);
                 } else {
                     pvalue = next->value;
                     if (Q.Head.ptr.compare_exchange_weak(headPtr, next)) {
