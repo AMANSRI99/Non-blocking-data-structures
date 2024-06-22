@@ -4,6 +4,7 @@
 #include <atomic>
 #include <chrono>
 #include <cstdlib>  // For std::atoi
+#include <fstream>  // Add this line for std::ofstream
 #include "IQueue.h"
 #include "blocking_queue.h"
 #include "non_blocking_queue.h"
@@ -105,6 +106,19 @@ int main(int argc, char* argv[]) {
     std::cout << "Total Enqueued: " << enqueued_count.load() << std::endl;
     std::cout << "Total Dequeued: " << dequeued_count.load() << std::endl;
     std::cout << "Time taken: " << elapsed.count() << " seconds" << std::endl;
+
+     // Writing the results to the CSV file
+    std::ofstream file("result.csv", std::ios::app);  // Open file in append mode
+    if (file.is_open()) {
+        file << (queue_type == 0 ? "LockFreeQueue" : "SimpleBlockingQueue") << ","
+             << num_producers << ","
+             << num_consumers << ","
+             << num_elements << ","
+             << static_cast<int>(elapsed.count() * 1000) << "\n";  // Convert time to milliseconds
+        file.close();
+    } else {
+        std::cerr << "Unable to open file";
+    }
 
     return 0;
 }
