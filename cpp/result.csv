@@ -34,4 +34,4 @@ SimpleBlockingQueue,32,1000,32,58
 LockFreeQueue,32,10000,32,3922
 SimpleBlockingQueue,32,10000,32,1490
 LockFreeQueue,32,100000,32,10465
-SimpleBlockingQueue,32,100000,32,44446
+SimpleBlockingQueue,32,32,100000,98
