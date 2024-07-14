@@ -1,4 +1,4 @@
-QueueType,Producer Threads,Number of elements,Consumer Threads,Time
+QueueType,Producer Threads,Number of elements,Consumer Threads,Time(in ms)
 LockFreeQueue,1,1000,1,48
 SimpleBlockingQueue,1,1000,1,54
 LockFreeQueue,1,10000,1,372
@@ -34,4 +34,4 @@ SimpleBlockingQueue,32,1000,32,58
 LockFreeQueue,32,10000,32,3922
 SimpleBlockingQueue,32,10000,32,1490
 LockFreeQueue,32,100000,32,10465
-SimpleBlockingQueue,32,100000,32,98
+SimpleBlockingQueue,32,100000,32,63334
