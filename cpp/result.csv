@@ -1,5 +1,3 @@
-#Benchmarking Results
-
 Queue Type,Producer Threads,Consumer Threads,Total Elements,Execution Time (ms)
 
 LockFreeQueue,1,1,1000,0.802
