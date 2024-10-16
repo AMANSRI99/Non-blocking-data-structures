@@ -53,6 +53,11 @@ int main(int argc, char* argv[]) {
     const int num_consumers = std::atoi(argv[3]);  // Number of consumer threads
     const int queue_type = std::atoi(argv[4]);     // Queue type: 0 for LockFreeQueue, 1 for BlockingQueue
 
+    std::cout << "num_elements: " << num_elements << std::endl;
+    std::cout << "num_producers: " << num_producers << std::endl;
+    std::cout << "num_consumers: " << num_consumers << std::endl;
+    std::cout << "queue_type: " << queue_type << std::endl; 
+
     if (num_elements <= 0 || num_producers <= 0 || num_consumers <= 0 || (queue_type != 0 && queue_type != 1)) {
         std::cerr << "All parameters must be positive integers and queue_type must be 0 or 1." << std::endl;
         return 1;
@@ -114,7 +119,7 @@ int main(int argc, char* argv[]) {
              << num_producers << ","
              << num_consumers << ","
              << num_elements << ","
-             << static_cast<int>(elapsed.count() * 1000) << "\n";  // Convert time to milliseconds
+             << (elapsed.count() * 1000) << "\n";  // Convert time to milliseconds
         file.close();
     } else {
         std::cerr << "Unable to open file";
