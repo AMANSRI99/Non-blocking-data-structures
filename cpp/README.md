@@ -1,4 +1,4 @@
-# Benchmarking Lock-free and Blocking queue.
+# Benchmarking Lock-free and Blocking queues.
 
 This repository contains a C++ implementation of a non-blocking queue and includes a benchmarking tool to evaluate its performance. Follow the instructions below to compile and run the benchmark.
 
